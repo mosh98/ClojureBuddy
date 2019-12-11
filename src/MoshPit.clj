@@ -116,21 +116,29 @@
   (dotimes [_ (+ y 1 ) ]
     (println x)))
 
-(loopBoiMac "oke" 9)
+;(loopBoiMac "oke" 9)
 
+
+(defn square
+  [x]
+  (do (
+        (println "Processiong" x)
+       (* x x) )))
+
+(map square '(1 2 3 4 5 6 7 8 ))
 
 ;File I/O
 
-(use 'clojure.java.io)
-(defn write-to-file
-  [file text]
-  (with-open [wrtr (writer file)]
-    (.write wtr text))
-  )
-
-(defn read-from-file
-  [file]
-  ((try
-    (println slurp file)
-     (catch Exception e (println "ERROR: " (.getMessage e))
-       ))))
+;(use 'clojure.java.io)
+;(defn write-to-file
+;  [file text]
+;  (with-open [wrtr (writer file)]
+;    (.write wtr text))
+;  )
+;
+;(defn read-from-file
+;  [file]
+;  ((try
+;    (println slurp file)
+;     (catch Exception e (println "ERROR: " (.getMessage e))
+;       ))))
