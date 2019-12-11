@@ -1,10 +1,10 @@
 (ns AnotherOne)
 
 ;(vector [variable value])
+
 (defmacro safe ([expr]
-                (let [x  (apply(first expr) (list (rest expr) ) )]
-                  ( x))
-                ) )
+               (reduce (first expr) (rest expr))
+                ))
 
 (def v (safe (/ 12 4)))
-v
+(println v "  hehehe")
