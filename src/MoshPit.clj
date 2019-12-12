@@ -142,3 +142,8 @@
 ;    (println slurp file)
 ;     (catch Exception e (println "ERROR: " (.getMessage e))
 ;       ))))
+
+(for-loop [a 0]
+          (< a 10) (inc a)
+          (print a))
+

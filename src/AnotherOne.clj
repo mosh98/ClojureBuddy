@@ -2,9 +2,11 @@
 
 ;(vector [variable value])
 
-(defmacro safe ([expr]
-               (reduce (first expr) (rest expr))
-                ))
+(defmacro safe [list]
+ `(do ~list)
 
-(def v (safe (/ 12 4)))
-(println v "  hehehe")
+  )
+
+
+(def v (safe (/ 10 2)))
+(println v )
