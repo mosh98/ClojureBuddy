@@ -9,15 +9,23 @@
                   (catch Exception e ( (str "caught exception: " (.getMessage e) )))
                   )
                 )
-(
- [[elem1 elem2]expr]
-  `(do elem1 elem2)
- `(do ~expr)
- )
 
-
-
+( [& expr]
+ `(try
+    (let ~(first expr)
+      (try
+        ~@(rest expr)
+        (catch Exception e# (throw e#))
+        (finally
+          (let [x# (first ~(first expr))]
+            (if (instance? java.io.Closeable x#)
+              (.close x#))))))
+    (catch Exception e# (str "Exception - " e#))))
   )
+
+
+
+
 
 
 
