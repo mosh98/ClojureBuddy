@@ -168,6 +168,8 @@
                 :east 1
                 :south 2
                 :west 3})
+
+
 (direction :north)
 
 
@@ -182,14 +184,51 @@
 ;(select [:id :name] from persons where [:id > 2] orderby :name)
 ;;({:id 4 :name "beatrice"} {:id 3 :name "isak"})
 
-(defmacro select [& what]
-  (let [fields (set
-                 (take-while #(not= 'from %) what))
-        source (fnext
-                 (drop-while #(not= 'from %) what))]
-    `(map (fn [record#]
-            (into {} (filter #(~fields (first %)) record#)))
-          ~source)))
+;(select-keys {persons} [:a])
 
-;(println (select [:id :name]))
-(select :a :b from table)
+;(defmacro select
+;;  [var _ out _ coll _ wherearg _ orderarg]
+;;
+;;
+;;
+;;  )
+
+;(defn print-coordinates-1 [point]
+;  (let [x (first point)
+;        y (second point)
+;        z (last point)]
+;    (println "x:" x ", y:" y ", z:" z)))
+;
+;(print-coordinates-1 [2 3 6])
+;
+;
+;
+;(doseq [[k x] direction]
+;  (println k ":" x)
+;  )
+;(get direction 2)
+
+(sort-by (juxt :id )  persons)
+;sorts person by NAME
+
+(doall (map #(println %) persons))
+;prints out everyTHING
+
+
+;In Clojure, the underscore is used idiomatically to indicate that the argument it identifies is not subsequently used.
+(defmacro selectSort
+  [_ out _ orderArgs]
+  (map #)
+  (sort-by (juxt orderArgs)~out)
+  )
+
+(defmacro select
+  [var _ out _ coll _ wherearg _ orderarg]
+  `(map #(select-keys [~var] ~out)
+        (filter (fn [~var] ~wherearg)
+                (sort-by (fn [~var] ~orderarg)
+                         ~coll)                             ;for sortby
+                )                                           ;for filter
+        )                                                   ;formap
+  )
+
