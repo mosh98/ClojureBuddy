@@ -41,15 +41,12 @@
           (catch Exception e# (str " caught exception" e#)))
     '(try
        (with-open
-         [ ~(first expression) ~@(rest expression)])
+          ~(first expression) ~@(rest expression))
        (catch Exception #e (str "caught exception: " e#)))
     ))
 
 (defmacro safe [& args]
-  (if (< (count args) 2)
-    `(try
-       ~@args
-       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>")))
+  (if (< (.length args) 2)
     `(try
        (let ~(first args)
          (eval ~@(rest args)
@@ -57,7 +54,10 @@
                (finally
                  (let [exit# (first ~(first args))]
                    (if (instance? java.io.Closeable exit#) (.close exit#))))))
-       (catch Exception e# (str "" (.getMessage e#))))))
+       (catch Exception e# (str "<caught Exception: " (.getMessage e#))))
+    `(try
+       ~@args
+       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>")))))
 
 
 
