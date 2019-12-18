@@ -31,11 +31,7 @@
 
 
 
-(select n as (. n toUpperCase)
-        from ok
-        where (> (. n length)2)
-        orderby (. n length)
-        )
+
 
 (def direction {
                 :north 0
