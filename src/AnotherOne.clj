@@ -22,6 +22,45 @@
               (.close x#))))))
     (catch Exception e# (str "Exception - " e#))))
   )
+(import java.io.FileReader java.io.File)
+(defmacro safe
+  [& expression]
+  '(try ~@expression
+      (catch Exception e# (str " caught exception" e#)))
+  '(try
+     (with-open
+       (~(first expression)) ~@(rest expression))
+            (catch Exception #e (str "caught exception: " e#)))
+     )
+
+
+(defmacro safe
+  [ & expression]
+  (if (< (count expression)2)
+    '(try ~@expression
+          (catch Exception e# (str " caught exception" e#)))
+    '(try
+       (with-open
+         [ ~(first expression) ~@(rest expression)])
+       (catch Exception #e (str "caught exception: " e#)))
+    ))
+
+(defmacro safe [& args]
+  (if (< (count args) 2)
+    `(try
+       ~@args
+       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>")))
+    `(try
+       (let ~(first args)
+         (eval ~@(rest args)
+               (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>" ))
+               (finally
+                 (let [exit# (first ~(first args))]
+                   (if (instance? java.io.Closeable exit#) (.close exit#))))))
+       (catch Exception e# (str "" (.getMessage e#))))
+    )
+    )
+
 
 
 
