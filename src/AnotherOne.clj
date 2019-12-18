@@ -3,40 +3,57 @@
 
 ;(vector [variable value])
 
-(defmacro safe ( [expr]
-                (try
-                  `(do ~expr)
-                  (catch Exception e ( (str "caught exception: " (.getMessage e) )))
-                  )
-                )
-
-( [& expr]
- `(try
-    (let ~(first expr)
-      (try
-        ~@(rest expr)
-        (catch Exception e# (throw e#))
-        (finally
-          (let [x# (first ~(first expr))]
-            (if (instance? java.io.Closeable x#)
-              (.close x#))))))
-    (catch Exception e# (str "Exception - " e#))))
-  )
+;(defmacro safe ( [expr]
+;                (try
+;                  `(do ~expr)
+;                  (catch Exception e ( (str "caught exception: " (.getMessage e) )))
+;                  )
+;                )
+;
+;( [& expr]
+; `(try
+;    (let ~(first expr)
+;      (try
+;        ~@(rest expr)
+;        (catch Exception e# (throw e#))
+;        (finally
+;          (let [x# (first ~(first expr))]
+;            (if (instance? java.io.Closeable x#)
+;              (.close x#))))))
+;    (catch Exception e# (str "Exception - " e#))))
+;  )
 
 
 (defmacro safe [& args]
   (if (< (count args) 2)
-    (try
+
+    `(try
        ~@args
-       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>")))
-    (try
+       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>"))
+    )
+    `(try
        (let ~(first args)
          (eval ~@(rest args)
                (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>" ))
+
                (finally
                  (let [exit# (first ~(first args))]
-                   (if (instance? java.io.Closeable exit#) (.close exit#))))))
-       (catch Exception e# (str "" (.getMessage e#))))))
+
+                   (if (instance? java.io.Closeable exit#) (.close exit#)
+
+                   )
+
+                 )
+               )
+         )
+       )
+       (catch Exception e# (str "" (.getMessage e#)))
+
+
+    )
+
+  )
+)
 
 
 
