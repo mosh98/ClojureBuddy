@@ -29,8 +29,9 @@
 
     `(try
        ~@args
-       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>"))
+       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>") )
     )
+
     `(try
        (let ~(first args)
          (eval ~@(rest args)
