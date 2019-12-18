@@ -175,10 +175,11 @@
 
 
 
-(def persons '({:id 1 :name "olle"}
-               {:id 2 :name "anna"}
+(def persons '({:id 4 :name "beatrice"}
+               {:id 1 :name "olle"}
                {:id 3 :name "isak"}
-               {:id 4 :name "beatrice"}))
+               {:id 2 :name "anna"}
+               ))
 
 
 ;(select [:id :name] from persons where [:id > 2] orderby :name)
@@ -208,7 +209,7 @@
 ;  )
 ;(get direction 2)
 
-(sort-by (juxt :id )  persons)
+(sort-by :id persons)
 ;sorts person by NAME
 
 (doall (map #(println %) persons))
@@ -217,18 +218,37 @@
 
 ;In Clojure, the underscore is used idiomatically to indicate that the argument it identifies is not subsequently used.
 (defmacro selectSort
-  [_ out _ orderArgs]
-  (map #)
-  (sort-by (juxt orderArgs)~out)
+  [out _ orderArgs]
+  ;(map #(sort-by out orderArgs))
+  (into (sorted-map-by (fn [key1 key2]
+                         (compare [(get x key2) key2]
+                                  [(get x key1) key1])
+                         )
+                       )
+        x)
   )
 
-(defmacro select
-  [var _ out _ coll _ wherearg _ orderarg]
-  `(map #(select-keys [~var] ~out)
-        (filter (fn [~var] ~wherearg)
-                (sort-by (fn [~var] ~orderarg)
-                         ~coll)                             ;for sortby
-                )                                           ;for filter
-        )                                                   ;formap
-  )
+(defn filter-by-id-over [arg]
+  (filter arg #(> % id-val)
+          )
+          )
 
+;(defmacro select
+;  [var _ out _ coll _ wherearg _ orderarg]
+;  `(map #(select-keys [~var] ~out)
+;        (filter (fn [~var] ~wherearg)
+;                (sort-by (fn [~var] ~orderarg)
+;                         ~coll)                             ;for sortby
+;                )                                           ;for filter
+;        )                                                   ;formap
+;  )
+
+  (defmacro select
+    [columns _ coll _ wherearg _ orderarg]
+    `(map #(select-keys % (into [] ~columns))
+
+          (filter #((second wherearg) (% (first wherearg)) (last wherearg))
+                  (sort #(compare (~orderarg %1) (~orderarg %2))
+                        ~coll))
+
+          ))

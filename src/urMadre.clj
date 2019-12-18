@@ -28,9 +28,46 @@
 
 (def ok '("muha", "haha","huahua","haha"))
 
+
+
+
 (select n as (. n toUpperCase)
         from ok
         where (> (. n length)2)
         orderby (. n length)
         )
+
+(def direction {
+                :north 0
+                :east 1
+                :south 2
+                :west 3})
+
+
+(def persons '({:id 4 :name "beatrice"}
+               {:id 1 :name "olle"}
+               {:id 3 :name "isak"}
+               {:id 2 :name "anna"}
+               ))
+
+(sortListBy persons where :id)
+
+(defmacro sortListBy
+  [from _ orderby]
+`(sort-by ~orderby ~from)
+  )
+
+;(select [:id :name] from persons where [:id > 2] orderby :name)
+
+(defmacro select
+  [columns _ source _ wherearg _ orderarg]
+    `(map #(select-keys % (into [] ~columns))
+          (filter #((second ~wherearg) (% (first ~wherearg)) (last ~wherearg))
+             (sort-by ~orderarg ~source
+             )
+          )
+    )
+)
+
+
 
