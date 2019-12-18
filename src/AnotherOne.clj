@@ -57,9 +57,7 @@
                (finally
                  (let [exit# (first ~(first args))]
                    (if (instance? java.io.Closeable exit#) (.close exit#))))))
-       (catch Exception e# (str "" (.getMessage e#))))
-    )
-    )
+       (catch Exception e# (str "" (.getMessage e#))))))
 
 
 
