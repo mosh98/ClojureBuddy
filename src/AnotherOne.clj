@@ -57,6 +57,18 @@
 )
 
 
+(defmacro safe
+  ([expression]
+   `(try
+      (do ~expression)
+      (catch Exception e# (throw e#))))
+  ([expression & variable]
+   `(try
+      (with-open ~expression ~@variable)
+      (catch Exception e# (throw e#)))))
+
+
+
 
 
 (def v (safe (/ 2 0)))
