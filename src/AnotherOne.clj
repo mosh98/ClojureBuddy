@@ -26,11 +26,9 @@
 
 (defmacro safe [& args]
   (if (< (count args) 2)
-
     `(try
        ~@args
-       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>") )
-    )
+       (catch Exception e# (str "<caught Exception: " (.getMessage e#) "!>") ))
 
     `(try
        (let ~(first args)
